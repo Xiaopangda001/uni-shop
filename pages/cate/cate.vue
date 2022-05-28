@@ -72,6 +72,7 @@
       },
       // 点击三级分类跳转商品列表的方法
       gotoGoodsList(item3){
+        // console.log(111)
         uni.navigateTo({url:'/subpkg/goods_list/goods_list?cid=' + item3.cat_id})
       }
     }
