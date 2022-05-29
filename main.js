@@ -21,9 +21,9 @@ $http.afterRequest = function(options){
   uni.hideLoading()
 }
 // 封装一个请求失败的提示消息的方法
-uni.$showMsg = function(){
+uni.$showMsg = function(title= '数据加载失败！'){
   uni.showToast({
-    title: '数据加载失败！',
+    title,
     duration: 1500,
     icon: 'none'
   })
