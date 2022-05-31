@@ -1,11 +1,12 @@
 let mpMixins = {}
 
-// #ifdef H5
-import {
-	isPC
-} from "./isPC"
-// #endif
-// #ifdef APP-VUE|| MP-WEIXIN || H5
+// // #ifdef H5
+// import {
+// 	isPC
+// } from "./isPC"
+// // #endif
+// // #ifdef APP-VUE|| MP-WEIXIN || H5
+let isPC=function(){return false}
 
 mpMixins = {
 	data() {

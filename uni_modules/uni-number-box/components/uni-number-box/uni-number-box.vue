@@ -131,7 +131,9 @@
 			},
 			_onBlur(event) {
 				this.$emit('blur', event)
-				let value = event.detail.value;
+				// let value = event.detail.value;
+        // 小数取整
+        let value = parseInt(event.detail.value)
 				if (isNaN(value)) {
 					this.inputValue = this.min;
 					return;

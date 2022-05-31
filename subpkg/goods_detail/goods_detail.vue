@@ -39,7 +39,27 @@
 </template>
 
 <script>
+  import {
+    mapMutations, mapGetters
+  } from 'vuex'
   export default {
+    computed: {
+      ...mapGetters('mycart',['total'])
+    },
+    watch: {
+      // 监听购物车的总数量，并实时赋值给购物车的徽标
+      total: {
+        // 因为一开始就要展示购物车的徽标，所以要立即监听
+        immediate: true,
+        handler(newValue){
+          // 在配置对象中寻找 购物车 
+          const result = this.options.find(item => item.text === '购物车')
+          if(result){
+            result.info = newValue
+          }
+        }
+      }
+    },
     data() {
       return {
         // 存储商品信息的数据
@@ -51,7 +71,7 @@
         }, {
           icon: 'cart',
           text: '购物车',
-          info: 2
+          info: 0
         }],
         // 右侧按钮组的配置对象
         buttonGroup: [{
@@ -74,6 +94,7 @@
       this.getGoodsDetail(goods_id)
     },
     methods: {
+      ...mapMutations('mycart', ['addToCart']),
       async getGoodsDetail(goods_id) {
         const {
           data: res
@@ -83,7 +104,8 @@
         // console.log(res)
         if (res.meta.status !== 200) return uni.$showMsg()
         // 使用字符串的 replace() 方法，为 img 标签添加行内的 display:block 样式，从而解决图片底部空白间隙的问题,将 webp 的后缀名替换为 jpg 的后缀名解决ios不兼容webp
-        res.message.goods_introduce = res.message.goods_introduce.replace(/<img /g, '<img style="display: block;" ').replace(/webp/g, 'jpg')
+        res.message.goods_introduce = res.message.goods_introduce.replace(/<img /g, '<img style="display: block;" ')
+          .replace(/webp/g, 'jpg')
         this.goods_info = res.message
       },
       // 点击轮播图的预览事件
@@ -103,6 +125,24 @@
           uni.switchTab({
             url: '/pages/cart/cart'
           })
+        }
+      },
+      // 右侧按钮的点击事件
+      buttonClick(e) {
+        // console.log(e)
+        // 1. 判断是否点击了 加入购物车 按钮
+        if (e.content.text === '加入购物车') {
+          // 2. 组织一个商品的信息对象
+          const goods = {
+            goods_id: this.goods_info.goods_id, // 商品的Id
+            goods_name: this.goods_info.goods_name, // 商品的名称
+            goods_price: this.goods_info.goods_price, // 商品的价格
+            goods_count: 1, // 商品的数量
+            goods_small_logo: this.goods_info.goods_small_logo, // 商品的图片
+            goods_state: true // 商品的勾选状态
+          }
+          // 3. 调用方法
+          this.addToCart(goods)
         }
       }
     }
